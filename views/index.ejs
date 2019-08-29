@@ -1,0 +1,16 @@
+<form method="post" action="/add/user">
+    <label for="name">User Name</label>
+    <br><br>
+    <input name="name" type="text">
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
+
+
+<h1>Users</h1>
+<ul>
+    <%users.forEach(function(user){%>
+        <li><%= user.name%></li>
+    <%})%>
+</ul>
+
