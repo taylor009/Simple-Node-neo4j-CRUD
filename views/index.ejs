@@ -1,16 +1,48 @@
+
+<h2>Add User</h2>
 <form method="post" action="/add/user">
-    <label for="name">User Name</label>
+    <label for="user_name">User Name</label>
     <br><br>
-    <input name="name" type="text">
+    <input name="user_name" type="text">
     <br><br>
     <input type="submit" value="Submit">
 </form>
 
+<br><br>
+<h2>Add Company</h2>
+<form method="post" action="/add/company">
+    <label for="company_name">Company Name</label>
+    <br><br>
+    <input name="company_name" type="text">
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
+
+<!--<h2>Add User to Company</h2>-->
+<!--<form method="post" action="/company/user/add">-->
+<!--    <label for="company_name">Company Name</label>-->
+<!--    <br><br>-->
+<!--    <input name="company_name" type="text">-->
+<!--    <br><br>-->
+<!--    <label for="user_name">User Name</label>-->
+<!--    <br><br>-->
+<!--    <input name="user_name" type="text">-->
+<!--    <input type="submit" value="Submit">-->
+<!--</form>-->
 
 <h1>Users</h1>
 <ul>
     <%users.forEach(function(user){%>
         <li><%= user.name%></li>
+    <%})%>
+</ul>
+
+<br><br>
+
+<h1>Companies</h1>
+<ul>
+    <%companies.forEach(function(company){%>
+        <li><%= company.name%></li>
     <%})%>
 </ul>
 

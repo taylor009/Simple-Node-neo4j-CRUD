@@ -20,7 +20,7 @@ const session = driver.session();
 
 app.get('/', (req, res, next) =>
 {
-    session.run('MATCH(n:User) RETURN n LIMIT 25').then((result) =>
+    session.run('MATCH(n:User) RETURN n LIMIT 25').then(result =>
     {
         let userArr = [];
         result.records.forEach((record) =>
@@ -29,10 +29,24 @@ app.get('/', (req, res, next) =>
                 id: record._fields[0].identity.low, name: record._fields[0].properties.name,
             });
         });
-        console.log(userArr);
-        res.render('index', {
-            users: userArr
+
+        session.run('MATCH(n:Company) RETURN n LIMIT 25').then(result2 => {
+            const companiesArr = [];
+            result2.records.forEach(record => {
+                companiesArr.push({
+                    id: record._fields[0].identity.low,
+                    name: record._fields[0].properties.name
+                })
+            });
+            res.render('index', {
+                users: userArr,
+                companies: companiesArr
+            });
+        })
+        .catch(error => {
+            console.log(error.message)
         });
+
     }).catch((error) =>
     {
         console.log(error.message);
@@ -41,9 +55,41 @@ app.get('/', (req, res, next) =>
 
 app.post('/add/user', (req, res) =>
 {
-    let name = req.body.name;
+    let name = req.body.user_name;
 
     session.run('CREATE(n:User {name:{nameParam}}) RETURN n.name', {nameParam:name}).then(result => {
+        res.redirect('/');
+
+        session.close();
+    }).catch(error =>
+    {
+        console.error(`Error has occurred ${error.message}`);
+    });
+
+    res.redirect('/');
+});
+
+app.post('/add/company',(req, res) =>
+{
+    let company_name = req.body.company_name;
+
+    session.run('CREATE(n:Company {name:{nameParam}}) RETURN n.name', {nameParam:company_name}).then(result => {
+        res.redirect('/');
+
+        session.close();
+    }).catch(error =>
+    {
+        console.error(`Error has occurred ${error.message}`);
+    });
+
+    res.redirect('/');
+});
+
+app.post('/company/user/add',(req, res) =>
+{
+    let company_name = req.body.company_name;
+    let user_name = req.body.user_name;
+    session.run('MATCH(a:User {name:{userNameParam}}),(b:Company {name:{companyNameParam}}) MERGE(a)-[r:WORKS_AT]-(b) RETURN a,b', {companyNameParam:company_name, userNameParam:user_name}).then(result => {
         res.redirect('/');
 
         session.close();
